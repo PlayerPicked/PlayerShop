@@ -39,6 +39,8 @@ messages:
     currency-no-permission: "%prefix% &cYou don't have permission to use &e{currency}&c!"
 
     limit-reached: "%prefix% &cYou have reached your shop limit! (&e{current}/{limit}&c)"
+    creation-mode-enabled: "%prefix% &aShop creation mode enabled! Right-click a chest with the item you want to sell."
+    creation-mode-disabled: "%prefix% &cShop creation mode disabled."
 
     listing:
       enabled: "%prefix% &aYour shop is now visible in &e/playershop search&a!"

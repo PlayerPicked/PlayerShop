@@ -36,6 +36,26 @@ public final class PlayerShopService {
     private final PlayerShopStorageManager storageManager = plugin.getStorageManager();
     private final ShopOwnerNotifyService ownerNotify = new ShopOwnerNotifyService();
 
+    private final java.util.Set<UUID> creationModePlayers = new java.util.concurrent.ConcurrentHashMap<>().newKeySet();
+
+    public boolean toggleCreationMode(@NotNull UUID uuid) {
+        if (creationModePlayers.contains(uuid)) {
+            creationModePlayers.remove(uuid);
+            return false;
+        } else {
+            creationModePlayers.add(uuid);
+            return true;
+        }
+    }
+
+    public boolean hasCreationMode(@NotNull UUID uuid) {
+        return creationModePlayers.contains(uuid);
+    }
+
+    public void removeCreationMode(@NotNull UUID uuid) {
+        creationModePlayers.remove(uuid);
+    }
+
     public void create(@NotNull Player player, @NotNull Location location, @NotNull ItemStack item) {
         ItemStack base = item.clone();
         base.setAmount(1);

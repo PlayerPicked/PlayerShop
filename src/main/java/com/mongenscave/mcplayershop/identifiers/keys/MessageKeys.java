@@ -63,6 +63,8 @@ public enum MessageKeys {
     SHOP_MODE_SELL("messages.shop.mode.sell"),
 
     SHOP_LIMIT_REACHED("messages.shop.limit-reached"),
+    SHOP_CREATION_MODE_ENABLED("messages.shop.creation-mode-enabled"),
+    SHOP_CREATION_MODE_DISABLED("messages.shop.creation-mode-disabled"),
 
     SEARCH_DISABLED("messages.search.disabled"),
     SEARCH_TOO_SHORT("messages.search.too-short"),

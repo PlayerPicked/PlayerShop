@@ -2,7 +2,6 @@ package com.mongenscave.mcplayershop.hooks;
 
 import com.mongenscave.mcplayershop.McPlayerShop;
 import com.mongenscave.mcplayershop.hooks.impl.currency.CurrencyManager;
-import com.mongenscave.mcplayershop.hooks.impl.currency.impl.CoinsEngineHook;
 import com.mongenscave.mcplayershop.hooks.impl.currency.impl.PlayerPointsHook;
 import com.mongenscave.mcplayershop.hooks.impl.currency.impl.VaultHook;
 import com.mongenscave.mcplayershop.hooks.impl.island.impl.SuperiorSkyblockHook;
@@ -129,16 +128,7 @@ public final class HookManager {
                 }
 
                 case "coinsengine" -> {
-                    if (!isPluginPresent("CoinsEngine")) continue;
-
-                    String id = plugin.getHooks().getString(base + ".currency-id");
-                    if (id == null) {
-                        LoggerUtils.warn("Missing currency-id for: " + key);
-                        continue;
-                    }
-
-                    currencyManager.register(new CoinsEngineHook(id));
-                    LoggerUtils.info("Currency registered: " + key + " (CoinsEngine:" + id + ")");
+                    LoggerUtils.warn("CoinsEngine is no longer supported.");
                 }
 
                 case "playerpoints" -> {

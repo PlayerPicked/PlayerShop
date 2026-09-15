@@ -57,6 +57,18 @@ public class CommandPlayerShop {
         sender.sendMessage(MessageKeys.RELOAD.getMessage());
     }
 
+    @Subcommand("create")
+    @CommandPermission("mcplayershop.create")
+    private void create(@NotNull Player player) {
+        boolean enabled = plugin.getShopService().toggleCreationMode(player.getUniqueId());
+        
+        if (enabled) {
+            player.sendMessage(MessageKeys.SHOP_CREATION_MODE_ENABLED.getMessage());
+        } else {
+            player.sendMessage(MessageKeys.SHOP_CREATION_MODE_DISABLED.getMessage());
+        }
+    }
+
     @Subcommand("delete")
     @CommandPermission("mcplayershop.admin")
     private void delete(@NotNull Player player) {

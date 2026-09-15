@@ -1,6 +1,6 @@
 plugins {
     id("java")
-    id("com.gradleup.shadow") version("8.3.2")
+    id("com.gradleup.shadow") version("8.3.11")
     id("io.github.revxrsal.zapper") version("1.0.2")
     id("io.freefair.lombok") version("8.11")
 }
@@ -21,6 +21,7 @@ repositories {
     maven("https://repo.infernalsuite.com/repository/maven-snapshots/")
     maven("https://repo.rosewooddev.io/repository/public/")
     maven("https://repo.bg-software.com/repository/api/")
+    maven("https://repo.nightexpressdev.com/releases/")
 }
 
 dependencies {
@@ -49,7 +50,6 @@ dependencies {
         exclude(module = "bukkit")
     }
     compileOnly("org.black_ixx:playerpoints:3.3.2")
-    compileOnly("su.nightexpress.coinsengine:CoinsEngine:2.6.0")
     compileOnly("com.bgsoftware:SuperiorSkyblockAPI:2026.1")
 }
 

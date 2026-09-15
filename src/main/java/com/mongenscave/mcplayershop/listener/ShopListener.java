@@ -51,6 +51,10 @@ public final class ShopListener implements Listener {
         var optional = manager.get(block.getLocation());
 
         if (optional.isPresent()) {
+            if (player.isSneaking() && event.getItem() != null && event.getItem().getType().isBlock()) {
+                return;
+            }
+
             event.setUseInteractedBlock(Event.Result.DENY);
             event.setUseItemInHand(Event.Result.DENY);
             event.setCancelled(true);
@@ -68,7 +72,7 @@ public final class ShopListener implements Listener {
 
         if (event.isCancelled()) return;
 
-        if (!player.isSneaking()) return;
+        if (!service.hasCreationMode(player.getUniqueId())) return;
 
         int limit = ShopLimitUtil.getLimit(player);
         int current = manager.getShopCount(player.getUniqueId());
@@ -98,6 +102,7 @@ public final class ShopListener implements Listener {
         }
 
         service.create(player, block.getLocation(), item);
+        service.removeCreationMode(player.getUniqueId());
 
         event.setCancelled(true);
     }
