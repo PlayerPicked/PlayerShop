@@ -6,6 +6,7 @@ import com.playerpicked.playershop.identifiers.keys.MessageKeys;
 import com.playerpicked.playershop.utils.LoggerUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
@@ -45,9 +46,43 @@ public final class UpdateChecker {
         if (latest == null) return;
 
         String current = plugin.getDescription().getVersion();
-        if (current.equalsIgnoreCase(latest)) return;
+        if (!isNewer(latest, current)) return;
 
         notifyUpdate(current, latest);
+    }
+
+    private static boolean isNewer(String latest, String current) {
+        int[] latestParts = parseVersion(latest);
+        int[] currentParts = parseVersion(current);
+        int length = Math.max(latestParts.length, currentParts.length);
+
+        for (int i = 0; i < length; i++) {
+            int latestPart = i < latestParts.length ? latestParts[i] : 0;
+            int currentPart = i < currentParts.length ? currentParts[i] : 0;
+
+            if (latestPart != currentPart) return latestPart > currentPart;
+        }
+
+        return false;
+    }
+
+    @NotNull
+    private static int[] parseVersion(@NotNull String version) {
+        String core = version.replaceFirst("^[^0-9]+", "").split("[^0-9.]", 2)[0];
+        if (core.isEmpty()) return new int[0];
+
+        String[] parts = core.split("\\.");
+        int[] numbers = new int[parts.length];
+
+        for (int i = 0; i < parts.length; i++) {
+            try {
+                numbers[i] = parts[i].isEmpty() ? 0 : Integer.parseInt(parts[i]);
+            } catch (NumberFormatException exception) {
+                numbers[i] = 0;
+            }
+        }
+
+        return numbers;
     }
 
     private @Nullable String fetchLatestVersion() {

@@ -1,5 +1,5 @@
 name: PlayerShop
-version: '1.6.0'
+version: '1.6.1'
 author: "kxtsoo"
 main: com.playerpicked.playershop.PlayerShop
 api-version: '1.21'
