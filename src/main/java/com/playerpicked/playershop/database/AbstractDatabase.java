@@ -25,6 +25,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -45,6 +46,7 @@ public abstract class AbstractDatabase implements Database {
 
     protected final HikariDataSource dataSource;
     protected final ExecutorService executor = Executors.newVirtualThreadPerTaskExecutor();
+    private final ExecutorService storageExecutor = Executors.newSingleThreadExecutor();
 
     protected AbstractDatabase() {
         this.dataSource = createDataSource();
@@ -365,20 +367,21 @@ public abstract class AbstractDatabase implements Database {
 
             } catch (Exception exception) {
                 LoggerUtils.error("Load storage failed: " + exception.getMessage());
-                return Optional.empty();
+                throw new CompletionException(exception);
             }
         }, executor);
     }
 
     @Override
     public CompletableFuture<Void> saveStorage(PlayerShopStorage storage) {
+        String shopId = storage.getShopId().toString();
+        String serialized = ItemUtil.serializeInventory(storage.getContents().toArray(new ItemStack[0]));
+
         return CompletableFuture.runAsync(() -> {
             try (Connection connection = dataSource.getConnection();
                  PreparedStatement ps = connection.prepareStatement(getStorageUpsertSql())) {
 
-                String serialized = ItemUtil.serializeInventory(storage.getContents().toArray(new ItemStack[0]));
-
-                ps.setString(1, storage.getShopId().toString());
+                ps.setString(1, shopId);
                 ps.setString(2, serialized);
                 ps.setLong(3, System.currentTimeMillis());
 
@@ -387,7 +390,7 @@ public abstract class AbstractDatabase implements Database {
             } catch (Exception exception) {
                 LoggerUtils.error("Save storage failed: " + exception.getMessage());
             }
-        }, executor);
+        }, storageExecutor);
     }
 
     @Override
@@ -404,7 +407,7 @@ public abstract class AbstractDatabase implements Database {
             } catch (Exception exception) {
                 LoggerUtils.error("Delete storage failed: " + exception.getMessage());
             }
-        }, executor);
+        }, storageExecutor);
     }
 
     @Nullable
@@ -515,18 +518,23 @@ public abstract class AbstractDatabase implements Database {
 
     @Override
     public void shutdown() {
-        try {
-            executor.shutdown();
-            if (!executor.awaitTermination(3, TimeUnit.SECONDS)) {
-                executor.shutdownNow();
-            }
-        } catch (InterruptedException exception) {
-            executor.shutdownNow();
-            Thread.currentThread().interrupt();
-        }
+        awaitShutdown(storageExecutor);
+        awaitShutdown(executor);
 
         if (dataSource != null && !dataSource.isClosed()) {
             dataSource.close();
+        }
+    }
+
+    private void awaitShutdown(@NotNull ExecutorService service) {
+        try {
+            service.shutdown();
+            if (!service.awaitTermination(3, TimeUnit.SECONDS)) {
+                service.shutdownNow();
+            }
+        } catch (InterruptedException exception) {
+            service.shutdownNow();
+            Thread.currentThread().interrupt();
         }
     }
 }

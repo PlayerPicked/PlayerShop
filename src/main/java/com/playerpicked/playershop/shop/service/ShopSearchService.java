@@ -65,7 +65,9 @@ public final class ShopSearchService {
             PlayerShopData shop = candidates.get(index);
             int score = scores.get(index);
 
-            futures.add(storageManager.getOrLoad(shop.getShopId()).thenApply(storage -> toResult(shop, storage, score)));
+            futures.add(storageManager.getOrLoad(shop.getShopId())
+                    .thenApply(storage -> toResult(shop, storage, score))
+                    .exceptionally(throwable -> null));
         }
 
         return CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]))
@@ -75,6 +77,7 @@ public final class ShopSearchService {
 
                     for (CompletableFuture<ShopSearchResult> future : futures) {
                         ShopSearchResult result = future.join();
+                        if (result == null) continue;
 
                         if (hideUnavailable && !result.isAvailable()) {
                             hidden++;

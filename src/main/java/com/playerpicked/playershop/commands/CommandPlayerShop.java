@@ -106,7 +106,10 @@ public class CommandPlayerShop {
         Location location = shop.getLocation();
         String ownerName = shop.getOwnerName();
 
-        plugin.getShopService().remove(player, shop);
+        if (!plugin.getShopService().remove(player, shop)) {
+            player.sendMessage(MessageKeys.SHOP_DELETE_FAILED.getMessage());
+            return;
+        }
 
         PlayerShop.getScheduler().runTask(location, () -> location.getBlock().setType(Material.AIR, false));
 

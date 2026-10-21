@@ -16,6 +16,7 @@ messages:
     admin-delete-confirm: "%prefix% &c&lWARNING! &7This shop belongs to &e{owner}&7! Repeat the action within &e{seconds}s &7to delete it permanently."
     admin-delete-no-target: "%prefix% &cYou are not looking at a player shop!"
     deleted: "%prefix% &aShop deleted!"
+    delete-failed: "%prefix% &cCould not delete the shop, its storage failed to load! Nothing was removed, please contact an administrator."
 
     transaction-success: "%prefix% &aYou {mode} &e{amount}x {item} &afor &e{price} &afrom &e{owner}"
     transaction-failed: "%prefix% &cTransaction failed!"
@@ -126,4 +127,4 @@ messages:
       minute: "m"
       second: "s"
 
-version: '10'
+version: '11'

@@ -104,10 +104,17 @@ public final class PlayerShopService {
         return shop.getOwnerUuid().equals(player.getUniqueId()) || player.hasPermission(BYPASS_PERMISSION);
     }
 
-    public void remove(@NotNull Player player, @NotNull PlayerShopData shop) {
-        if (!canManage(player, shop)) return;
+    public boolean remove(@NotNull Player player, @NotNull PlayerShopData shop) {
+        if (!canManage(player, shop)) return false;
 
         UUID shopId = shop.getShopId();
+
+        PlayerShopStorage storage;
+        try {
+            storage = storageManager.getOrLoadSync(shopId);
+        } catch (Exception exception) {
+            return false;
+        }
 
         Material blockMaterial = ShopBlockUtil.getDropMaterial(shop.getLocation().getBlock());
 
@@ -115,29 +122,26 @@ public final class PlayerShopService {
         visuals.remove(shopId);
         closeMenus(shopId);
 
-        storageManager.getOrLoad(shopId).thenAccept(storage -> {
-            if (Bukkit.isPrimaryThread()) {
-                finishRemoval(player, shopId, storage, blockMaterial);
-                return;
-            }
-
-            PlayerShop.getScheduler().runTask(() -> finishRemoval(player, shopId, storage, blockMaterial));
-        });
-    }
-
-    private void finishRemoval(@NotNull Player player, @NotNull UUID shopId, @NotNull PlayerShopStorage storage, @NotNull Material blockMaterial) {
-        closeMenus(shopId);
-
         List<ItemStack> contents = new ArrayList<>(storage.getContents());
+        contents.add(new ItemStack(blockMaterial));
         storage.getContents().clear();
 
         storageManager.remove(shopId);
         DatabaseManager.getDatabase().deleteShop(shopId);
 
-        player.getInventory().addItem(new ItemStack(blockMaterial));
+        giveOrDrop(player, contents);
+        return true;
+    }
 
-        for (ItemStack item : contents) {
-            if (item != null) player.getInventory().addItem(item);
+    private void giveOrDrop(@NotNull Player player, @NotNull List<ItemStack> items) {
+        Location location = player.getLocation();
+
+        for (ItemStack item : items) {
+            if (item == null) continue;
+
+            for (ItemStack leftover : player.getInventory().addItem(item).values()) {
+                location.getWorld().dropItemNaturally(location, leftover);
+            }
         }
     }
 

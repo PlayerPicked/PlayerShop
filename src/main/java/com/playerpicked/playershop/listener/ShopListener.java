@@ -14,6 +14,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
@@ -21,9 +22,11 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -186,7 +189,11 @@ public final class ShopListener implements Listener {
             return;
         }
 
-        service.remove(player, shop);
+        if (!service.remove(player, shop)) {
+            event.setCancelled(true);
+            player.sendMessage(MessageKeys.SHOP_DELETE_FAILED.getMessage());
+            return;
+        }
 
         if (!owner) {
             player.sendMessage(MessageKeys.SHOP_ADMIN_DELETED.getMessage()
@@ -194,6 +201,20 @@ public final class ShopListener implements Listener {
         }
 
         event.setDropItems(false);
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onItemMove(@NotNull InventoryMoveItemEvent event) {
+        if (isShopInventory(event.getDestination()) || isShopInventory(event.getSource())) {
+            event.setCancelled(true);
+        }
+    }
+
+    private boolean isShopInventory(@NotNull Inventory inventory) {
+        if (!(inventory.getHolder(false) instanceof BlockState state)) return false;
+        if (!ShopBlockUtil.isShopBlock(state.getType())) return false;
+
+        return PlayerShop.getInstance().getShopManager().get(state.getLocation()).isPresent();
     }
 
     @EventHandler
