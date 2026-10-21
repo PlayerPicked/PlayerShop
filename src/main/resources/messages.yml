@@ -42,6 +42,11 @@ messages:
     creation-mode-enabled: "%prefix% &aShop creation mode enabled! Right-click a chest with the item you want to sell."
     creation-mode-disabled: "%prefix% &cShop creation mode disabled."
 
+    hints:
+      creation: "%prefix% &7To create a shop, use &e/playershop create&7. (Toggle hints: &e/playershop hints&7)"
+      enabled: "%prefix% &aShop hints enabled."
+      disabled: "%prefix% &cShop hints disabled."
+
     listing:
       enabled: "%prefix% &aYour shop is now visible in &e/playershop search&a!"
       disabled: "%prefix% &7Your shop is now hidden from the search."
@@ -121,4 +126,4 @@ messages:
       minute: "m"
       second: "s"
 
-version: '9'
+version: '10'

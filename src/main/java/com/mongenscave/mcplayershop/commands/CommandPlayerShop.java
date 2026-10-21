@@ -149,6 +149,19 @@ public class CommandPlayerShop {
                 });
     }
 
+    @Subcommand("hints")
+    @CommandPermission("playershop.use")
+    public void hints(Player player) {
+        org.bukkit.persistence.PersistentDataContainer pdc = player.getPersistentDataContainer();
+        if (pdc.has(com.mongenscave.mcplayershop.shop.service.PlayerShopService.HINTS_DISABLED, org.bukkit.persistence.PersistentDataType.BYTE)) {
+            pdc.remove(com.mongenscave.mcplayershop.shop.service.PlayerShopService.HINTS_DISABLED);
+            player.sendMessage(MessageKeys.SHOP_HINTS_ENABLED.getMessage());
+        } else {
+            pdc.set(com.mongenscave.mcplayershop.shop.service.PlayerShopService.HINTS_DISABLED, org.bukkit.persistence.PersistentDataType.BYTE, (byte) 1);
+            player.sendMessage(MessageKeys.SHOP_HINTS_DISABLED.getMessage());
+        }
+    }
+
     private void openResults(@NotNull Player player, @NotNull String query, @NotNull ShopSearchResponse response, @NotNull SearchFilter filter, @NotNull SearchSort sort) {
         if (!player.isOnline()) return;
 

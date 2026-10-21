@@ -66,6 +66,10 @@ public enum MessageKeys {
     SHOP_CREATION_MODE_ENABLED("messages.shop.creation-mode-enabled"),
     SHOP_CREATION_MODE_DISABLED("messages.shop.creation-mode-disabled"),
 
+    SHOP_HINT_CREATION("messages.shop.hints.creation"),
+    SHOP_HINTS_ENABLED("messages.shop.hints.enabled"),
+    SHOP_HINTS_DISABLED("messages.shop.hints.disabled"),
+
     SEARCH_DISABLED("messages.search.disabled"),
     SEARCH_TOO_SHORT("messages.search.too-short"),
     SEARCH_SEARCHING("messages.search.searching"),

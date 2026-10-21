@@ -37,6 +37,7 @@ public final class PlayerShopService {
     private final ShopOwnerNotifyService ownerNotify = new ShopOwnerNotifyService();
 
     private final java.util.Set<UUID> creationModePlayers = new java.util.concurrent.ConcurrentHashMap<>().newKeySet();
+    public static final org.bukkit.NamespacedKey HINTS_DISABLED = new org.bukkit.NamespacedKey(McPlayerShop.getInstance(), "hints_disabled");
 
     public boolean toggleCreationMode(@NotNull UUID uuid) {
         if (creationModePlayers.contains(uuid)) {
