@@ -58,7 +58,7 @@ public class CommandPlayerShop {
     }
 
     @Subcommand("create")
-    @CommandPermission("mcplayershop.create")
+    @CommandPermission("playershop.create")
     private void create(@NotNull Player player) {
         boolean enabled = plugin.getShopService().toggleCreationMode(player.getUniqueId());
         
@@ -153,11 +153,11 @@ public class CommandPlayerShop {
     @CommandPermission("playershop.use")
     public void hints(Player player) {
         org.bukkit.persistence.PersistentDataContainer pdc = player.getPersistentDataContainer();
-        if (pdc.has(com.mongenscave.mcplayershop.shop.service.PlayerShopService.HINTS_DISABLED, org.bukkit.persistence.PersistentDataType.BYTE)) {
-            pdc.remove(com.mongenscave.mcplayershop.shop.service.PlayerShopService.HINTS_DISABLED);
+        if (pdc.has(com.playerpicked.playershop.shop.service.PlayerShopService.HINTS_DISABLED, org.bukkit.persistence.PersistentDataType.BYTE)) {
+            pdc.remove(com.playerpicked.playershop.shop.service.PlayerShopService.HINTS_DISABLED);
             player.sendMessage(MessageKeys.SHOP_HINTS_ENABLED.getMessage());
         } else {
-            pdc.set(com.mongenscave.mcplayershop.shop.service.PlayerShopService.HINTS_DISABLED, org.bukkit.persistence.PersistentDataType.BYTE, (byte) 1);
+            pdc.set(com.playerpicked.playershop.shop.service.PlayerShopService.HINTS_DISABLED, org.bukkit.persistence.PersistentDataType.BYTE, (byte) 1);
             player.sendMessage(MessageKeys.SHOP_HINTS_DISABLED.getMessage());
         }
     }

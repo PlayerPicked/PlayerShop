@@ -1,13 +1,13 @@
 package com.playerpicked.playershop.hooks;
 
-import com.mongenscave.mcplayershop.McPlayerShop;
-import com.mongenscave.mcplayershop.hooks.impl.currency.CurrencyManager;
-import com.mongenscave.mcplayershop.hooks.impl.currency.impl.CoinsEngineHook;
-import com.mongenscave.mcplayershop.hooks.impl.currency.impl.PlayerPointsHook;
-import com.mongenscave.mcplayershop.hooks.impl.currency.impl.VaultHook;
-import com.mongenscave.mcplayershop.hooks.impl.island.impl.SuperiorSkyblockHook;
-import com.mongenscave.mcplayershop.listener.WorldLoadListener;
-import com.mongenscave.mcplayershop.utils.LoggerUtils;
+import com.playerpicked.playershop.PlayerShop;
+import com.playerpicked.playershop.hooks.impl.currency.CurrencyManager;
+import com.playerpicked.playershop.hooks.impl.currency.impl.CoinsEngineHook;
+import com.playerpicked.playershop.hooks.impl.currency.impl.PlayerPointsHook;
+import com.playerpicked.playershop.hooks.impl.currency.impl.VaultHook;
+import com.playerpicked.playershop.hooks.impl.island.impl.SuperiorSkyblockHook;
+import com.playerpicked.playershop.listener.WorldLoadListener;
+import com.playerpicked.playershop.utils.LoggerUtils;
 import dev.dejvokep.boostedyaml.block.implementation.Section;
 import lombok.Getter;
 import net.milkbowl.vault.economy.Economy;
