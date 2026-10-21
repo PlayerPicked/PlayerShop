@@ -1,12 +1,12 @@
 plugins {
     id("java")
-    id("com.gradleup.shadow") version("8.3.11")
+    id("com.gradleup.shadow") version("8.3.2")
     id("io.github.revxrsal.zapper") version("1.0.2")
     id("io.freefair.lombok") version("8.11")
 }
 
-group = "com.mongenscave"
-version = "1.5.0"
+group = "com.playerpicked"
+version = "1.6.1"
 
 repositories {
     mavenCentral()
@@ -21,7 +21,6 @@ repositories {
     maven("https://repo.infernalsuite.com/repository/maven-snapshots/")
     maven("https://repo.rosewooddev.io/repository/public/")
     maven("https://repo.bg-software.com/repository/api/")
-    maven("https://repo.nightexpressdev.com/releases/")
 }
 
 dependencies {
@@ -37,7 +36,6 @@ dependencies {
     zap("mysql:mysql-connector-java:8.0.33")
     zap("com.h2database:h2:2.3.232")
     zap("com.zaxxer:HikariCP:6.2.1")
-    zap("org.bstats:bstats-bukkit:3.0.2")
     zap("io.github.revxrsal:lamp.common:4.0.0-rc.17")
     zap("io.github.revxrsal:lamp.brigadier:4.0.0-rc.17")
     zap("com.github.Anon8281:UniversalScheduler:0.1.6")
@@ -50,7 +48,10 @@ dependencies {
         exclude(module = "bukkit")
     }
     compileOnly("org.black_ixx:playerpoints:3.3.2")
+    compileOnly("su.nightexpress.coinsengine:CoinsEngine:2.6.0")
     compileOnly("com.bgsoftware:SuperiorSkyblockAPI:2026.1")
+
+    implementation("com.playerpicked:pickly-paper:1.0.1")
 }
 
 java {
@@ -65,7 +66,7 @@ tasks.withType<JavaCompile> {
 
 zapper {
     libsFolder = "libs"
-    relocationPrefix = "com.mongenscave.mcplayershop"
+    relocationPrefix = "com.playerpicked.playershop"
 
     repositories {
         includeProjectRepositories()
@@ -73,4 +74,5 @@ zapper {
 
     relocate("org.bstats", "bstats")
     relocate("com.github.Anon8281.universalScheduler", "universalScheduler")
+    relocate("com.playerpicked.pickly", "pickly")
 }

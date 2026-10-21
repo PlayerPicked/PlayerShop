@@ -1,1 +1,1 @@
-rootProject.name = "mc-PlayerShop"
+rootProject.name = "PlayerShop"
