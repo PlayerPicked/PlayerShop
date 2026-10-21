@@ -25,7 +25,7 @@ hooks:
     providers:
       vault:
         enabled: true
-      coinsengine:
+      excellenteconomy:
         enabled: true
       playerpoints:
         enabled: true
@@ -57,13 +57,13 @@ hooks:
         display-name: '&bPoints'
         prefix: '🔥'
       gems:
-        provider: coinsengine
+        provider: excellenteconomy
         currency-id: gems
         permission: playershop.currency.gems
         display-name: '&bGems'
         prefix: ♦
       tokens:
-        provider: coinsengine
+        provider: excellenteconomy
         currency-id: tokens
         permission: playershop.currency.tokens
         display-name: '&eTokens'

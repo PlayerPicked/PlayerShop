@@ -1,5 +1,5 @@
 name: PlayerShop
-version: '1.6.1'
+version: '1.6.2'
 author: "kxtsoo"
 main: com.playerpicked.playershop.PlayerShop
 api-version: '1.21'
@@ -9,3 +9,4 @@ softdepend:
   - PlayerPoints
   - Vault
   - SuperiorSkyblock2
+  - ExcellentEconomy

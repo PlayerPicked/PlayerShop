@@ -2,7 +2,7 @@ package com.playerpicked.playershop.hooks;
 
 import com.playerpicked.playershop.PlayerShop;
 import com.playerpicked.playershop.hooks.impl.currency.CurrencyManager;
-import com.playerpicked.playershop.hooks.impl.currency.impl.CoinsEngineHook;
+import com.playerpicked.playershop.hooks.impl.currency.impl.ExcellentEconomyHook;
 import com.playerpicked.playershop.hooks.impl.currency.impl.PlayerPointsHook;
 import com.playerpicked.playershop.hooks.impl.currency.impl.VaultHook;
 import com.playerpicked.playershop.hooks.impl.island.impl.SuperiorSkyblockHook;
@@ -13,6 +13,7 @@ import lombok.Getter;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
+import su.nightexpress.excellenteconomy.api.ExcellentEconomyAPI;
 
 public final class HookManager {
 
@@ -115,9 +116,7 @@ public final class HookManager {
         if (section == null) return;
 
         for (String key : section.getRoutesAsStrings(false)) {
-            String base = "currencies." + key;
-
-            String provider = plugin.getHooks().getString(base + ".provider");
+            String provider = section.getString(key + ".provider");
 
             if (provider == null) continue;
 
@@ -128,17 +127,29 @@ public final class HookManager {
                     LoggerUtils.info("Currency registered: " + key + " (Vault)");
                 }
 
-                case "coinsengine" -> {
-                    if (!isPluginPresent("CoinsEngine")) continue;
+                case "excellenteconomy", "coinsengine" -> {
+                    if (!isPluginPresent("ExcellentEconomy")) {
+                        LoggerUtils.warn("   [Hook] ExcellentEconomy not found, skipping currency: " + key);
+                        continue;
+                    }
 
-                    String id = plugin.getHooks().getString(base + ".currency-id");
+                    String id = section.getString(key + ".currency-id");
                     if (id == null) {
                         LoggerUtils.warn("Missing currency-id for: " + key);
                         continue;
                     }
 
-                    currencyManager.register(new CoinsEngineHook(id));
-                    LoggerUtils.info("Currency registered: " + key + " (CoinsEngine:" + id + ")");
+                    var registration = plugin.getServer()
+                            .getServicesManager()
+                            .getRegistration(ExcellentEconomyAPI.class);
+
+                    if (registration == null) {
+                        LoggerUtils.warn("   [Hook] ExcellentEconomy found but its API is not registered.");
+                        continue;
+                    }
+
+                    currencyManager.register(new ExcellentEconomyHook(registration.getProvider(), key, id));
+                    LoggerUtils.info("Currency registered: " + key + " (ExcellentEconomy:" + id + ")");
                 }
 
                 case "playerpoints" -> {

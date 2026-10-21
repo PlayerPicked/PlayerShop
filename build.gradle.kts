@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "com.playerpicked"
-version = "1.6.1"
+version = "1.6.2"
 
 repositories {
     mavenCentral()
@@ -21,11 +21,11 @@ repositories {
     maven("https://repo.infernalsuite.com/repository/maven-snapshots/")
     maven("https://repo.rosewooddev.io/repository/public/")
     maven("https://repo.bg-software.com/repository/api/")
+    maven("https://repo.playerpicked.com/releases")
 }
 
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.21.8-R0.1-SNAPSHOT")
-    compileOnly("org.projectlombok:lombok:1.18.36")
 
     implementation("io.github.revxrsal:lamp.bukkit:4.0.0-rc.17") {
         exclude(module = "lamp.common")
@@ -48,20 +48,26 @@ dependencies {
         exclude(module = "bukkit")
     }
     compileOnly("org.black_ixx:playerpoints:3.3.2")
-    compileOnly("su.nightexpress.coinsengine:CoinsEngine:2.6.0")
+    compileOnly("su.nightexpress.excellenteconomy:ExcellentEconomy:2.8.0")
     compileOnly("com.bgsoftware:SuperiorSkyblockAPI:2026.1")
 
     implementation("com.playerpicked:pickly-paper:1.0.1")
 }
 
+lombok {
+    version.set("1.18.42")
+}
+
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(21))
+        languageVersion.set(JavaLanguageVersion.of(25))
     }
 }
 
 tasks.withType<JavaCompile> {
     options.compilerArgs.add("-parameters")
+    options.release.set(21)
+    options.encoding = "UTF-8"
 }
 
 zapper {
