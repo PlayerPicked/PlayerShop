@@ -21,7 +21,6 @@ repositories {
     maven("https://repo.infernalsuite.com/repository/maven-snapshots/")
     maven("https://repo.rosewooddev.io/repository/public/")
     maven("https://repo.bg-software.com/repository/api/")
-    maven("https://repo.playerpicked.com/releases")
 }
 
 dependencies {

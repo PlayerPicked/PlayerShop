@@ -37,6 +37,9 @@ public final class ShopListener implements Listener {
     private final PlayerShopService service = PlayerShop.getInstance().getShopService();
     private final ShopDeleteConfirmService deleteConfirm = PlayerShop.getInstance().getDeleteConfirmService();
 
+    private final java.util.Map<UUID, Long> hintCooldowns = new java.util.HashMap<>();
+    private static final long HINT_COOLDOWN_MS = 30_000L;
+
     @EventHandler
     public void onInteract(@NotNull PlayerInteractEvent event) {
         if (event.getHand() != EquipmentSlot.HAND) return;
@@ -51,6 +54,10 @@ public final class ShopListener implements Listener {
         var optional = manager.get(block.getLocation());
 
         if (optional.isPresent()) {
+            if (player.isSneaking() && event.getItem() != null && event.getItem().getType().isBlock()) {
+                return;
+            }
+
             event.setUseInteractedBlock(Event.Result.DENY);
             event.setUseItemInHand(Event.Result.DENY);
             event.setCancelled(true);
@@ -68,7 +75,19 @@ public final class ShopListener implements Listener {
 
         if (event.isCancelled()) return;
 
-        if (!player.isSneaking()) return;
+        if (!service.hasCreationMode(player.getUniqueId())) {
+            if (player.isSneaking() && event.getItem() != null && event.getItem().getType() != Material.AIR) {
+                if (!player.getPersistentDataContainer().has(PlayerShopService.HINTS_DISABLED, org.bukkit.persistence.PersistentDataType.BYTE)) {
+                    long now = System.currentTimeMillis();
+                    long last = hintCooldowns.getOrDefault(player.getUniqueId(), 0L);
+                    if (now - last > HINT_COOLDOWN_MS) {
+                        hintCooldowns.put(player.getUniqueId(), now);
+                        player.sendMessage(MessageKeys.SHOP_HINT_CREATION.getMessage());
+                    }
+                }
+            }
+            return;
+        }
 
         int limit = ShopLimitUtil.getLimit(player);
         int current = manager.getShopCount(player.getUniqueId());
@@ -98,6 +117,7 @@ public final class ShopListener implements Listener {
         }
 
         service.create(player, block.getLocation(), item);
+        service.removeCreationMode(player.getUniqueId());
 
         event.setCancelled(true);
     }

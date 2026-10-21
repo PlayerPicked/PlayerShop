@@ -57,6 +57,18 @@ public class CommandPlayerShop {
         sender.sendMessage(MessageKeys.RELOAD.getMessage());
     }
 
+    @Subcommand("create")
+    @CommandPermission("playershop.create")
+    private void create(@NotNull Player player) {
+        boolean enabled = plugin.getShopService().toggleCreationMode(player.getUniqueId());
+        
+        if (enabled) {
+            player.sendMessage(MessageKeys.SHOP_CREATION_MODE_ENABLED.getMessage());
+        } else {
+            player.sendMessage(MessageKeys.SHOP_CREATION_MODE_DISABLED.getMessage());
+        }
+    }
+
     @Subcommand("delete")
     @CommandPermission("playershop.admin")
     private void delete(@NotNull Player player) {
@@ -135,6 +147,19 @@ public class CommandPlayerShop {
 
                     PlayerShop.getScheduler().runTask(online, () -> openResults(online, trimmed, response, filter, sort));
                 });
+    }
+
+    @Subcommand("hints")
+    @CommandPermission("playershop.use")
+    public void hints(Player player) {
+        org.bukkit.persistence.PersistentDataContainer pdc = player.getPersistentDataContainer();
+        if (pdc.has(com.playerpicked.playershop.shop.service.PlayerShopService.HINTS_DISABLED, org.bukkit.persistence.PersistentDataType.BYTE)) {
+            pdc.remove(com.playerpicked.playershop.shop.service.PlayerShopService.HINTS_DISABLED);
+            player.sendMessage(MessageKeys.SHOP_HINTS_ENABLED.getMessage());
+        } else {
+            pdc.set(com.playerpicked.playershop.shop.service.PlayerShopService.HINTS_DISABLED, org.bukkit.persistence.PersistentDataType.BYTE, (byte) 1);
+            player.sendMessage(MessageKeys.SHOP_HINTS_DISABLED.getMessage());
+        }
     }
 
     private void openResults(@NotNull Player player, @NotNull String query, @NotNull ShopSearchResponse response, @NotNull SearchFilter filter, @NotNull SearchSort sort) {
