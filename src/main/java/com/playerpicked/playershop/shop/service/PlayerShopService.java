@@ -14,6 +14,7 @@ import com.playerpicked.playershop.shop.models.PlayerShopStorage;
 import com.playerpicked.playershop.utils.ItemUtil;
 import com.playerpicked.playershop.utils.ShopBlockUtil;
 import com.playerpicked.playershop.utils.StorageUtil;
+import com.playerpicked.playershop.utils.TaxUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -28,6 +29,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 public final class PlayerShopService {
 
@@ -39,7 +41,7 @@ public final class PlayerShopService {
     private final PlayerShopStorageManager storageManager = plugin.getStorageManager();
     private final ShopOwnerNotifyService ownerNotify = new ShopOwnerNotifyService();
 
-    private final java.util.Set<UUID> creationModePlayers = new java.util.concurrent.ConcurrentHashMap<>().newKeySet();
+    private final java.util.Set<UUID> creationModePlayers = ConcurrentHashMap.newKeySet();
     public static final org.bukkit.NamespacedKey HINTS_DISABLED = new org.bukkit.NamespacedKey(PlayerShop.getInstance(), "hints_disabled");
 
     public boolean toggleCreationMode(@NotNull UUID uuid) {
@@ -197,7 +199,8 @@ public final class PlayerShopService {
             return ShopTransactionResult.INVENTORY_FULL;
         }
 
-        currency.deposit(Bukkit.getOfflinePlayer(shop.getOwnerUuid()), total);
+        double tax = TaxUtil.calculate(shop.getCurrencyId(), total);
+        currency.deposit(Bukkit.getOfflinePlayer(shop.getOwnerUuid()), total - tax);
 
         StorageUtil.remove(storage, shopItem, amount);
         storageManager.saveAsync(storage);
@@ -212,7 +215,7 @@ public final class PlayerShopService {
                 total
         );
 
-        ownerNotify.notifyBuy(shop, buyer, amount, total);
+        ownerNotify.notifyBuy(shop, buyer, amount, total - tax, tax);
 
         return ShopTransactionResult.SUCCESS;
     }
@@ -250,7 +253,8 @@ public final class PlayerShopService {
             return ShopTransactionResult.OWNER_NO_MONEY;
         }
 
-        currency.deposit(player, total);
+        double tax = TaxUtil.calculate(shop.getCurrencyId(), total);
+        currency.deposit(player, total - tax);
 
         storageManager.saveAsync(storage);
 
@@ -264,7 +268,7 @@ public final class PlayerShopService {
                 total
         );
 
-        ownerNotify.notifySell(shop, player, amount, total);
+        ownerNotify.notifySell(shop, player, amount, total, tax);
 
         return ShopTransactionResult.SUCCESS;
     }

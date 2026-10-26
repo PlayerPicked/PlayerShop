@@ -32,6 +32,20 @@ shop:
 storage:
   max-items: 1000
 
+tax:
+  # Removes a percentage of every shop transaction from the economy.
+  # The paying side always pays the full price, the receiving side gets the
+  # price minus the tax (the shop owner when someone buys from a shop,
+  # the player when someone sells to a shop)
+  enabled: false
+
+  # Tax in percent (0 - 100)
+  rate: 5.0
+
+  # Per-currency rates that override 'rate' - Use the currency ids from hooks.yml
+  currencies:
+    playerpoints: 0.0
+
 search:
   enabled: true
 
@@ -154,4 +168,4 @@ update-checker:
   # notifies the console + online admins with the 'playershop.update-notify' permission.
   enabled: true
 
-version: '3'
+version: '4'

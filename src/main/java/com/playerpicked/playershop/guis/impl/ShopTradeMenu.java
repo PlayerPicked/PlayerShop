@@ -15,6 +15,7 @@ import com.playerpicked.playershop.shop.models.PlayerShopData;
 import com.playerpicked.playershop.shop.models.PlayerShopStorage;
 import com.playerpicked.playershop.utils.AmountFormatUtil;
 import com.playerpicked.playershop.utils.SoundUtil;
+import com.playerpicked.playershop.utils.TaxUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -333,11 +334,15 @@ public final class ShopTradeMenu extends Menu implements ShopBoundMenu {
     @NotNull
     private String formatSuccess() {
         String owner = Bukkit.getOfflinePlayer(shop.getOwnerUuid()).getName();
+        double total = amount * shop.getPrice();
+        double tax = TaxUtil.calculate(shop.getCurrencyId(), total);
+        double price = shop.getMode() == ShopMode.SELL ? total : total - tax;
 
         return MessageKeys.SHOP_TRANSACTION_SUCCESS.getMessage()
                 .replace("{amount}", String.valueOf(amount))
                 .replace("{item}", resolveItemName())
-                .replace("{price}", AmountFormatUtil.format(amount * shop.getPrice()))
+                .replace("{price}", AmountFormatUtil.format(price))
+                .replace("{tax}", AmountFormatUtil.format(tax))
                 .replace("{currency}", MessageProcessor.process(getCurrencyValue(shop)))
                 .replace("{owner}", owner != null ? owner : "Unknown")
                 .replace("{mode}", resolveMode());

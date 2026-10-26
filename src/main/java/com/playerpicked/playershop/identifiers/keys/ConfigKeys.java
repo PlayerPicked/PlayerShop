@@ -18,6 +18,10 @@ public enum ConfigKeys {
 
     STORAGE_MAX_ITEMS("storage.max-items"),
 
+    TAX_ENABLED("tax.enabled"),
+    TAX_RATE("tax.rate"),
+    TAX_CURRENCIES("tax.currencies"),
+
     SEARCH_ENABLED("search.enabled"),
     SEARCH_LISTED_BY_DEFAULT("search.listed-by-default"),
     SEARCH_MAX_RESULTS("search.max-results"),
@@ -80,6 +84,10 @@ public enum ConfigKeys {
 
     public long getLong() {
         return config.getLong(path);
+    }
+
+    public double getDouble(double def) {
+        return config.getDouble(path, def);
     }
 
     public @NotNull String getRawString(@NotNull String def) {

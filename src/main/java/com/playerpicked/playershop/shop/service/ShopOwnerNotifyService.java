@@ -22,25 +22,26 @@ public final class ShopOwnerNotifyService {
 
     private final Map<String, PendingNotification> pending = new ConcurrentHashMap<>();
 
-    public void notifyBuy(@NotNull PlayerShopData shop, @NotNull Player actor, int amount, double total) {
-        enqueue(shop, actor, MessageKeys.SHOP_OWNER_NOTIFY_BUY, "BUY", amount, total);
+    public void notifyBuy(@NotNull PlayerShopData shop, @NotNull Player actor, int amount, double total, double tax) {
+        enqueue(shop, actor, MessageKeys.SHOP_OWNER_NOTIFY_BUY, "BUY", amount, total, tax);
     }
 
-    public void notifySell(@NotNull PlayerShopData shop, @NotNull Player actor, int amount, double total) {
-        enqueue(shop, actor, MessageKeys.SHOP_OWNER_NOTIFY_SELL, "SELL", amount, total);
+    public void notifySell(@NotNull PlayerShopData shop, @NotNull Player actor, int amount, double total, double tax) {
+        enqueue(shop, actor, MessageKeys.SHOP_OWNER_NOTIFY_SELL, "SELL", amount, total, tax);
     }
 
-    private void enqueue(@NotNull PlayerShopData shop, @NotNull Player actor, @NotNull MessageKeys key, @NotNull String type, int amount, double total) {
+    private void enqueue(@NotNull PlayerShopData shop, @NotNull Player actor, @NotNull MessageKeys key, @NotNull String type, int amount, double total, double tax) {
         if (key.isEmpty()) return;
         if (shop.getOwnerUuid().equals(actor.getUniqueId())) return;
 
         String mapKey = shop.getShopId() + ":" + actor.getUniqueId() + ":" + type;
 
         PendingNotification notification = pending.compute(mapKey, (k, existing) -> {
-            if (existing == null) return new PendingNotification(shop, actor.getName(), key, amount, total);
+            if (existing == null) return new PendingNotification(shop, actor.getName(), key, amount, total, tax);
 
             existing.amount += amount;
             existing.total += total;
+            existing.tax += tax;
             return existing;
         });
 
@@ -61,6 +62,7 @@ public final class ShopOwnerNotifyService {
                 .replace("{amount}", String.valueOf(notification.amount))
                 .replace("{item}", resolveItemName(notification.shop.getItemStack()))
                 .replace("{price}", AmountFormatUtil.format(notification.total))
+                .replace("{tax}", AmountFormatUtil.format(notification.tax))
                 .replace("{currency}", MessageProcessor.process(getCurrencyPrefix(notification.shop)));
 
         owner.sendActionBar(LegacyComponentSerializer.legacySection().deserialize(message));
@@ -108,13 +110,15 @@ public final class ShopOwnerNotifyService {
 
         private int amount;
         private double total;
+        private double tax;
 
-        private PendingNotification(PlayerShopData shop, String actorName, MessageKeys key, int amount, double total) {
+        private PendingNotification(PlayerShopData shop, String actorName, MessageKeys key, int amount, double total, double tax) {
             this.shop = shop;
             this.actorName = actorName;
             this.key = key;
             this.amount = amount;
             this.total = total;
+            this.tax = tax;
         }
     }
 }

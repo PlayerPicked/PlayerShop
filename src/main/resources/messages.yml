@@ -18,9 +18,11 @@ messages:
     deleted: "%prefix% &aShop deleted!"
     delete-failed: "%prefix% &cCould not delete the shop, its storage failed to load! Nothing was removed, please contact an administrator."
 
+    # {price} is what the player paid or received, {tax} is the tax taken from the transaction.
     transaction-success: "%prefix% &aYou {mode} &e{amount}x {item} &afor &e{price} &afrom &e{owner}"
     transaction-failed: "%prefix% &cTransaction failed!"
 
+    # {price} is what the owner received or paid, {tax} is the tax taken from the transactions.
     owner-notify:
       buy: "&e{player} &abought &e{amount}x {item} &afor &e{price}{currency} &afrom your shop"
       sell: "&e{player} &csold &e{amount}x {item} &cfor &e{price}{currency} &cto your shop"
@@ -127,4 +129,4 @@ messages:
       minute: "m"
       second: "s"
 
-version: '11'
+version: '12'
