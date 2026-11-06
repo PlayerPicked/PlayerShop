@@ -105,20 +105,8 @@ public final class ShopTransactionsMenu extends Menu implements ShopBoundMenu {
 
         ItemFactory.setItemsForMenu("shop-transactions.items", inventory);
 
-        if (!transactions.isEmpty()) {
-            for (int slot : ItemKeys.SHOP_TRANSACTIONS_EMPTY.getSlots()) {
-                inventory.setItem(slot, null);
-            }
-        }
-
-        if (transactions.isEmpty()) {
-            ItemStack item = ItemKeys.SHOP_TRANSACTIONS_EMPTY.getItem();
-
-            if (item != null && !ItemKeys.SHOP_TRANSACTIONS_EMPTY.getSlots().isEmpty()) {
-                inventory.setItem(ItemKeys.SHOP_TRANSACTIONS_EMPTY.getSlots().getFirst(), item);
-            }
-
-            return;
+        if (contentSlots.isEmpty()) {
+            contentSlots = List.of(0,1,2,3,4,5,6,7,8);
         }
 
         page = clampPage(page);
@@ -137,8 +125,20 @@ public final class ShopTransactionsMenu extends Menu implements ShopBoundMenu {
             inventory.setItem(ItemKeys.SHOP_TRANSACTIONS_PAGE_INFO.getSlots().getFirst(), cloned);
         }
 
-        if (contentSlots.isEmpty()) {
-            contentSlots = List.of(0,1,2,3,4,5,6,7,8);
+        if (!transactions.isEmpty()) {
+            for (int slot : ItemKeys.SHOP_TRANSACTIONS_EMPTY.getSlots()) {
+                inventory.setItem(slot, null);
+            }
+        }
+
+        if (transactions.isEmpty()) {
+            ItemStack item = ItemKeys.SHOP_TRANSACTIONS_EMPTY.getItem();
+
+            if (item != null && !ItemKeys.SHOP_TRANSACTIONS_EMPTY.getSlots().isEmpty()) {
+                inventory.setItem(ItemKeys.SHOP_TRANSACTIONS_EMPTY.getSlots().getFirst(), item);
+            }
+
+            return;
         }
 
         int start = page * contentSlots.size();

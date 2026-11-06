@@ -123,6 +123,7 @@ public final class ShopListener implements Listener {
         service.removeCreationMode(player.getUniqueId());
 
         event.setCancelled(true);
+        player.updateInventory();
     }
 
     private void openOwnerMenu(@NotNull Player player, @NotNull PlayerShopData shop) {
