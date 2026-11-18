@@ -43,8 +43,7 @@ public final class ShopStorageMenu extends PaginatedMenu implements ShopBoundMen
                     this.storage = storage;
 
                     PlayerShop.getScheduler().runTask(() -> {
-                        super.open();
-                        SoundUtil.play(menuController.owner(), MenuKeys.SHOP_STORAGE_SOUND_OPEN.getString());
+                        if (display()) SoundUtil.play(menuController.owner(), MenuKeys.SHOP_STORAGE_SOUND_OPEN.getString());
                     });
                 });
     }

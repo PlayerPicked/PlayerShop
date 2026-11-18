@@ -49,8 +49,7 @@ public final class ShopTradeMenu extends Menu implements ShopBoundMenu {
                     this.storage = storage;
 
                     PlayerShop.getScheduler().runTask(() -> {
-                        super.open();
-                        SoundUtil.play(menuController.owner(), MenuKeys.SHOP_TRADE_SOUND_OPEN.getString());
+                        if (display()) SoundUtil.play(menuController.owner(), MenuKeys.SHOP_TRADE_SOUND_OPEN.getString());
                     });
                 });
     }

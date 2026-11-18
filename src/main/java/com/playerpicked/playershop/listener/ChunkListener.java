@@ -4,12 +4,15 @@ import com.playerpicked.playershop.PlayerShop;
 import com.playerpicked.playershop.shop.manager.PlayerShopManager;
 import com.playerpicked.playershop.shop.models.PlayerShopData;
 import com.playerpicked.playershop.shop.service.PlayerShopService;
+import com.playerpicked.playershop.shop.service.ShopLoader;
 import com.playerpicked.playershop.shop.service.ShopVisualService;
 import org.bukkit.Chunk;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
+import org.bukkit.event.world.WorldLoadEvent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -35,6 +38,11 @@ public final class ChunkListener implements Listener {
                 visuals.spawn(shop);
             }
         });
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onWorldLoad(@NotNull WorldLoadEvent event) {
+        ShopLoader.loadByWorld(plugin.getShopManager(), event.getWorld().getName());
     }
 
     @EventHandler

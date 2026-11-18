@@ -41,8 +41,7 @@ public final class ShopMainMenu extends Menu implements ShopBoundMenu {
 
     @Override
     public void open() {
-        super.open();
-        SoundUtil.play(menuController.owner(), MenuKeys.SHOP_MAIN_SOUND_OPEN.getString());
+        if (display()) SoundUtil.play(menuController.owner(), MenuKeys.SHOP_MAIN_SOUND_OPEN.getString());
     }
 
     @Override

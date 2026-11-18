@@ -62,8 +62,7 @@ public final class ShopSearchMenu extends Menu {
         contentSlots = MenuKeys.SHOP_SEARCH_SLOTS.getIntList();
         if (contentSlots.isEmpty()) contentSlots = defaultSlots();
 
-        super.open();
-        SoundUtil.play(menuController.owner(), MenuKeys.SHOP_SEARCH_SOUND_OPEN.getString());
+        if (display()) SoundUtil.play(menuController.owner(), MenuKeys.SHOP_SEARCH_SOUND_OPEN.getString());
     }
 
     @Override

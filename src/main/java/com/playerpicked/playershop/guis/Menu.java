@@ -5,9 +5,11 @@ import com.playerpicked.playershop.guis.service.MenuService;
 import com.playerpicked.playershop.processor.MenuProcessor;
 import com.playerpicked.playershop.processor.MessageProcessor;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.inventory.InventoryView;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
@@ -40,22 +42,34 @@ public abstract class Menu implements InventoryHolder {
     }
 
     public void open() {
-        UUID uuid = menuController.owner().getUniqueId();
+        display();
+    }
 
-        if (!MenuService.canOpen(uuid)) return;
-        if (!menuController.canOpen(getClass())) return;
+    protected boolean display() {
+        Player player = menuController.owner();
+        UUID uuid = player.getUniqueId();
+
+        if (!MenuService.canOpen(uuid)) return false;
+        if (!menuController.canOpen(getClass())) return false;
 
         inventory = Bukkit.createInventory(this, getSlots(), MessageProcessor.process(getMenuName()));
 
         this.setMenuItems();
 
-        menuController.owner().openInventory(inventory);
+        InventoryView view = player.openInventory(inventory);
+        if (view == null || view.getTopInventory() != inventory) {
+            MenuController.remove(player);
+            inventory = null;
+            return false;
+        }
 
         int tick = Math.max(0, getMenuTick());
         if (tick > 0) {
             if (updater == null) updater = new MenuProcessor(this);
             updater.start(tick);
         }
+
+        return true;
     }
 
     public void close() {

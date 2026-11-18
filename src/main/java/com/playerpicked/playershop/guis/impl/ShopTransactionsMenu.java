@@ -56,8 +56,7 @@ public final class ShopTransactionsMenu extends Menu implements ShopBoundMenu {
                 .thenAccept(list -> {
                     this.transactions = list;
                     PlayerShop.getScheduler().runTask(() -> {
-                        super.open();
-                        SoundUtil.play(menuController.owner(), MenuKeys.SHOP_TRANSACTIONS_SOUND_OPEN.getString());
+                        if (display()) SoundUtil.play(menuController.owner(), MenuKeys.SHOP_TRANSACTIONS_SOUND_OPEN.getString());
                     });
                 });
     }

@@ -234,10 +234,7 @@ public abstract class AbstractDatabase implements Database {
                  PreparedStatement ps = connection.prepareStatement("SELECT * FROM playershops");
                  ResultSet rs = ps.executeQuery()) {
 
-                while (rs.next()) {
-                    PlayerShopData shop = map(rs);
-                    if (shop != null) list.add(shop);
-                }
+                collectShops(rs, list);
 
             } catch (Exception exception) {
                 LoggerUtils.error("Load shops failed: " + exception.getMessage());
@@ -260,10 +257,7 @@ public abstract class AbstractDatabase implements Database {
                 ps.setString(1, world);
 
                 try (ResultSet rs = ps.executeQuery()) {
-                    while (rs.next()) {
-                        PlayerShopData shop = map(rs);
-                        if (shop != null) list.add(shop);
-                    }
+                    collectShops(rs, list);
                 }
 
             } catch (Exception exception) {
@@ -408,6 +402,17 @@ public abstract class AbstractDatabase implements Database {
                 LoggerUtils.error("Delete storage failed: " + exception.getMessage());
             }
         }, storageExecutor);
+    }
+
+    private void collectShops(@NotNull ResultSet rs, @NotNull List<PlayerShopData> list) throws SQLException {
+        while (rs.next()) {
+            try {
+                PlayerShopData shop = map(rs);
+                if (shop != null) list.add(shop);
+            } catch (Exception exception) {
+                LoggerUtils.error("Skipping unreadable shop " + rs.getString("shop_id") + ": " + exception);
+            }
+        }
     }
 
     @Nullable
