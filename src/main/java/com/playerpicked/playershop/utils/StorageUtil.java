@@ -2,8 +2,11 @@ package com.playerpicked.playershop.utils;
 
 import com.playerpicked.playershop.identifiers.keys.ConfigKeys;
 import com.playerpicked.playershop.shop.models.PlayerShopStorage;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 public final class StorageUtil {
 
@@ -73,6 +76,51 @@ public final class StorageUtil {
         }
 
         return true;
+    }
+
+    /**
+     * Moves items from a storage slot into the player's inventory.
+     *
+     * <p>{@code addItem} mutates the inventory even when it can only add part of a stack,
+     * so a partial add has to be rolled back. Otherwise the player keeps the added items
+     * while the storage still holds the full stack.</p>
+     *
+     * @return the amount actually withdrawn, or 0 when nothing was moved
+     */
+    public static int withdrawToInventory(@NotNull Player player, @NotNull PlayerShopStorage storage,
+                                          int index, int amount) {
+        List<ItemStack> contents = storage.getContents();
+        if (index < 0 || index >= contents.size()) return 0;
+
+        ItemStack item = contents.get(index);
+        if (item == null) return 0;
+
+        int take = Math.min(amount, item.getAmount());
+        if (take <= 0) return 0;
+
+        ItemStack give = item.clone();
+        give.setAmount(take);
+
+        var leftovers = player.getInventory().addItem(give);
+        if (!leftovers.isEmpty()) {
+            int notAdded = leftovers.values().stream().mapToInt(ItemStack::getAmount).sum();
+            int added = take - notAdded;
+
+            if (added > 0) {
+                ItemStack rollback = give.clone();
+                rollback.setAmount(added);
+                player.getInventory().removeItem(rollback);
+            }
+            return 0;
+        }
+
+        if (item.getAmount() <= take) {
+            contents.remove(index);
+        } else {
+            item.setAmount(item.getAmount() - take);
+        }
+
+        return take;
     }
 
     public static int countAll(@NotNull PlayerShopStorage storage) {

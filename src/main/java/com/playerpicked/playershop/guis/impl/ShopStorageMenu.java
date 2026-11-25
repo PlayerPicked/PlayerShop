@@ -135,30 +135,9 @@ public final class ShopStorageMenu extends PaginatedMenu implements ShopBoundMen
     }
 
     private void withdraw(@NotNull Player player, int index, int amount) {
-        List<ItemStack> contents = storage.getContents();
-
-        if (index < 0 || index >= contents.size()) return;
-
-        ItemStack item = contents.get(index);
-        if (item == null) {
+        if (StorageUtil.withdrawToInventory(player, storage, index, amount) == 0) {
             SoundUtil.play(player, MenuKeys.SHOP_STORAGE_SOUND_ERROR.getString());
             return;
-        }
-
-        int take = Math.min(amount, item.getAmount());
-
-        ItemStack give = item.clone();
-        give.setAmount(take);
-
-        if (!player.getInventory().addItem(give).isEmpty()) {
-            SoundUtil.play(player, MenuKeys.SHOP_STORAGE_SOUND_ERROR.getString());
-            return;
-        }
-
-        if (item.getAmount() <= take) {
-            contents.remove(index);
-        } else {
-            item.setAmount(item.getAmount() - take);
         }
 
         PlayerShop.getInstance().getStorageManager().saveAsync(storage);
