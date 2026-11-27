@@ -339,7 +339,7 @@ public final class ShopTradeMenu extends Menu implements ShopBoundMenu {
 
         return MessageKeys.SHOP_TRANSACTION_SUCCESS.getMessage()
                 .replace("{amount}", String.valueOf(amount))
-                .replace("{item}", resolveItemName())
+                .replace("{item}", MessageProcessor.sanitize(resolveItemName()))
                 .replace("{price}", AmountFormatUtil.format(price))
                 .replace("{tax}", AmountFormatUtil.format(tax))
                 .replace("{currency}", MessageProcessor.process(getCurrencyValue(shop)))
