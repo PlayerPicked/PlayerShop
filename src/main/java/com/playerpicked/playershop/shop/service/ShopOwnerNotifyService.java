@@ -58,9 +58,9 @@ public final class ShopOwnerNotifyService {
         if (owner == null) return;
 
         String message = notification.key.getMessage()
-                .replace("{player}", notification.actorName)
+                .replace("{player}", MessageProcessor.sanitize(notification.actorName))
                 .replace("{amount}", String.valueOf(notification.amount))
-                .replace("{item}", resolveItemName(notification.shop.getItemStack()))
+                .replace("{item}", MessageProcessor.sanitize(resolveItemName(notification.shop.getItemStack())))
                 .replace("{price}", AmountFormatUtil.format(notification.total))
                 .replace("{tax}", AmountFormatUtil.format(notification.tax))
                 .replace("{currency}", MessageProcessor.process(getCurrencyPrefix(notification.shop)));

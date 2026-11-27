@@ -131,25 +131,23 @@ public final class ShopVisualService {
 
         String itemName = shop.getItemDisplayName();
         String currencyId = shop.getCurrencyId();
-        String currencyName = getCurrencyValue(shop, "display-name");
-        String currencyPrefix = getCurrencyValue(shop, "prefix");
+        String currencyName = MessageProcessor.process(getCurrencyValue(shop, "display-name"));
+        String currencyPrefix = MessageProcessor.process(getCurrencyValue(shop, "prefix"));
 
         final String ownerName = shop.getOwnerName();
         final int stock = resolveStock(shop, item);
 
         StringBuilder builder = new StringBuilder();
         for (String line : lines) {
-            String parsed = line
-                    .replace("{owner}", ownerName)
-                    .replace("{item}", itemName)
+            String parsed = MessageProcessor.process(line)
+                    .replace("{owner}", MessageProcessor.sanitize(ownerName))
+                    .replace("{item}", MessageProcessor.sanitize(itemName))
                     .replace("{price}", AmountFormatUtil.format(shop.getPrice()))
                     .replace("{currency}", currencyName)
                     .replace("{currency_id}", currencyId)
                     .replace("{shop_mode}", resolveMode(shop))
                     .replace("{currency_prefix}", currencyPrefix)
                     .replace("{storage}", AmountFormatUtil.format(stock));
-
-            parsed = MessageProcessor.process(parsed);
 
             builder.append(parsed).append("\n");
         }

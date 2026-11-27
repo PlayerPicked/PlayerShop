@@ -254,7 +254,7 @@ public final class ShopTradeMenu extends Menu implements ShopBoundMenu {
 
         if (amount > max) amount = max;
 
-        String itemName = resolveItemName();
+        String itemName = MessageProcessor.sanitize(resolveItemName());
         String currency = MessageProcessor.process(getCurrencyValue(shop));
 
         Map<String, String> replacements = Map.of(
@@ -327,7 +327,7 @@ public final class ShopTradeMenu extends Menu implements ShopBoundMenu {
             out = out.replace(entry.getKey(), entry.getValue());
         }
 
-        return MessageProcessor.process(out);
+        return out;
     }
 
     @NotNull

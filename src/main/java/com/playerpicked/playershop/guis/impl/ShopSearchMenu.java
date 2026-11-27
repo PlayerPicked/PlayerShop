@@ -283,8 +283,8 @@ public final class ShopSearchMenu extends Menu {
 
         Map<String, String> replacements = new HashMap<>();
 
-        replacements.put("{item}", shop.getItemDisplayName());
-        replacements.put("{owner}", shop.getOwnerName());
+        replacements.put("{item}", MessageProcessor.sanitize(shop.getItemDisplayName()));
+        replacements.put("{owner}", MessageProcessor.sanitize(shop.getOwnerName()));
         replacements.put("{mode}", selling ? context.sellMode() : context.buyMode());
 
         replacements.put("{price}", AmountFormatUtil.format(shop.getPrice()));
@@ -341,7 +341,7 @@ public final class ShopSearchMenu extends Menu {
 
     @NotNull
     private String displayQuery() {
-        if (!query.isBlank()) return query;
+        if (!query.isBlank()) return MessageProcessor.sanitize(query);
 
         return MessageProcessor.process(plugin.getGuis().getString("shop-search.browse-label", "Every shop"));
     }
