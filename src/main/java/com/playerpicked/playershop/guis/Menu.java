@@ -3,7 +3,6 @@ package com.playerpicked.playershop.guis;
 import com.playerpicked.playershop.data.MenuController;
 import com.playerpicked.playershop.guis.service.MenuService;
 import com.playerpicked.playershop.processor.MenuProcessor;
-import com.playerpicked.playershop.processor.MessageProcessor;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -52,7 +51,7 @@ public abstract class Menu implements InventoryHolder {
         if (!MenuService.canOpen(uuid)) return false;
         if (!menuController.canOpen(getClass())) return false;
 
-        inventory = Bukkit.createInventory(this, getSlots(), MessageProcessor.process(getMenuName()));
+        inventory = Bukkit.createInventory(this, getSlots(), getMenuName());
 
         this.setMenuItems();
 

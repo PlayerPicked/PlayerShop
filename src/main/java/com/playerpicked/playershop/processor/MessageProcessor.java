@@ -13,6 +13,8 @@ import java.util.regex.Pattern;
 public class MessageProcessor {
     private static final char COLOR_CHAR = '§';
     private static final Pattern HEX_PATTERN = Pattern.compile("&#([A-Fa-f0-9]{6})");
+    private static final Pattern USER_PLACEHOLDER = Pattern.compile("\\{[^}]{0,64}\\}");
+    private static final int MAX_USER_TEXT = 64;
 
     public @NotNull String process(@Nullable String message) {
         if (message == null) return "";
@@ -32,5 +34,15 @@ public class MessageProcessor {
 
         String hexProcessed = matcher.appendTail(builder).toString();
         return ChatColor.translateAlternateColorCodes('&', hexProcessed);
+    }
+
+    public @NotNull String sanitize(@Nullable String input) {
+        if (input == null) return "";
+
+        String cleaned = input.replace("&", "").replace("§", "")
+                .replace('\r', ' ').replace('\n', ' ');
+        cleaned = USER_PLACEHOLDER.matcher(cleaned).replaceAll("");
+
+        return cleaned.length() > MAX_USER_TEXT ? cleaned.substring(0, MAX_USER_TEXT) : cleaned;
     }
 }

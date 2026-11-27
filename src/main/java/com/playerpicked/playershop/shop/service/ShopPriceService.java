@@ -39,6 +39,15 @@ public final class ShopPriceService {
             return;
         }
 
+        if (!Double.isFinite(price)) {
+            if (audience instanceof Player player) {
+                player.sendMessage(MessageKeys.SHOP_PRICE_INVALID_NUMBER.getMessage());
+                openEditor(player, shop);
+            }
+
+            return;
+        }
+
         if (price < 0) {
             if (audience instanceof Player player) {
                 player.sendMessage(MessageKeys.SHOP_PRICE_NEGATIVE.getMessage());

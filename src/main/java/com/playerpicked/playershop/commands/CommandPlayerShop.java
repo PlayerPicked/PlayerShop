@@ -8,6 +8,7 @@ import com.playerpicked.playershop.identifiers.SearchSort;
 import com.playerpicked.playershop.identifiers.keys.ConfigKeys;
 import com.playerpicked.playershop.identifiers.keys.MenuKeys;
 import com.playerpicked.playershop.identifiers.keys.MessageKeys;
+import com.playerpicked.playershop.processor.MessageProcessor;
 import com.playerpicked.playershop.shop.models.PlayerShopData;
 import com.playerpicked.playershop.shop.models.ShopSearchResponse;
 import com.playerpicked.playershop.shop.service.ShopDeleteConfirmService;
@@ -127,6 +128,7 @@ public class CommandPlayerShop {
         }
 
         String trimmed = query == null ? "" : query.trim();
+        String displayQuery = MessageProcessor.sanitize(trimmed);
 
         int minimum = plugin.getSearchService().minQueryLength();
 
@@ -138,7 +140,7 @@ public class CommandPlayerShop {
         SearchFilter filter = plugin.getSearchService().defaultFilter();
         SearchSort sort = plugin.getSearchService().defaultSort();
 
-        if (!MessageKeys.SEARCH_SEARCHING.isEmpty()) player.sendMessage(MessageKeys.SEARCH_SEARCHING.getMessage().replace("{query}", trimmed.isEmpty() ? "*" : trimmed));
+        if (!MessageKeys.SEARCH_SEARCHING.isEmpty()) player.sendMessage(MessageKeys.SEARCH_SEARCHING.getMessage().replace("{query}", displayQuery.isEmpty() ? "*" : displayQuery));
 
         UUID uuid = player.getUniqueId();
 
@@ -168,7 +170,7 @@ public class CommandPlayerShop {
     private void openResults(@NotNull Player player, @NotNull String query, @NotNull ShopSearchResponse response, @NotNull SearchFilter filter, @NotNull SearchSort sort) {
         if (!player.isOnline()) return;
 
-        String display = query.isEmpty() ? "*" : query;
+        String display = query.isEmpty() ? "*" : MessageProcessor.sanitize(query);
 
         if (response.isEmpty()) {
             player.sendMessage(response.hidden() > 0
